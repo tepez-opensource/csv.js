@@ -5,8 +5,6 @@
  *
  * License: MIT License
  *
- *
- * tepez : using lodash's map instead of defining a map function
  * tepez : changed the structure of the file because previous structure caused
  * a problem after minification (don't know why)
  *
