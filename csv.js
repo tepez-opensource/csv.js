@@ -23,7 +23,6 @@
   else root.CSV = factory();
 }
 (this, function() {
-  "use strict";
 
   var CSV = {
     DefaultOptions: {
@@ -227,6 +226,38 @@
   };
 
   /**
+   * https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/map
+   */
+  if (!Array.prototype.map) {
+    Array.prototype.map = function(callback, thisArg) {
+      var T, A, k;
+      if (this === null) {
+        throw new TypeError(" this is null or not defined");
+      }
+      var O = Object(this);
+      var len = O.length >>> 0;
+      if ({}.toString.call(callback) != "[object Function]") {
+        throw new TypeError(callback + " is not a function");
+      }
+      if (thisArg) {
+        T = thisArg;
+      }
+      A = new Array(len);
+      k = 0;
+      while(k < len) {
+        var kValue, mappedValue;
+        if (k in O) {
+          kValue = O[ k ];
+          mappedValue = callback.call(T, kValue, k, O);
+          A[ k ] = mappedValue;
+        }
+        k++;
+      }
+      return A;
+    };
+  }
+
+  /**
    * @param rows String[][]
    * @param colnames String[]
    * @return Object[]
@@ -236,18 +267,16 @@
       colnames = rows.shift();
     }
 
-    return _.map(
-      rows,
-      function(row) {
-        var obj = {};
-        for (var i = 0; i < row.length; i++) {
-          obj[colnames[i]] = row[i];
-        }
-        return obj;
+    return rows.map(function(row) {
+      var obj = {};
+      for (var i = 0; i < row.length; i++) {
+        obj[colnames[i]] = row[i];
       }
-    );
+      return obj;
+    });
 
   };
 
-}));
+  return CSV;
 
+}));
